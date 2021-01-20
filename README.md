@@ -3,7 +3,7 @@
 
 ![Screenshot](https://user-images.githubusercontent.com/39271166/88943606-a877c300-d2c6-11ea-8323-7914f78f50e0.png)
 
-EDCB から LINE や Twitter（ツイート・DM）に通知を送れるツールです。
+EDCB から LINE や Twitter（ツイート・DM）に、そして cURL を使って通知を送れるツールです。
 
 ## About・Feature
 
@@ -12,6 +12,7 @@ xtne6f 版 EDCB のバッチファイル実行機能を使い、
 - LINE (LINE Notify)
 - Twitter (ツイート)
 - Twitter (ダイレクトメッセージ)
+- cURL
 
 に EDCB の各通知を送信できる Python 製ツールです。
 
@@ -27,6 +28,8 @@ LINE Notify はアプリケーションからの通知を指定したユーザ�
 Twitter への通知はツイートでの通知に加え、ダイレクトメッセージでの送信も可能です。  
 ダイレクトメッセージは自分宛てに送ることも、DM を送信できる他のアカウントに送ることもできます。  
 たとえば、録画通知用の Twitter アカウントを作ってメインアカウントと相互フォローになり、録画通知用のアカウントからメインアカウント宛てに通知を送ることもできます。
+
+※: cURL は手抜き実装のため、EDCBNotifier.py を直接編集する必要があります。投稿先のサービスに応じて、適宜修正して下さい。
 
 通知できるイベントは、
 
