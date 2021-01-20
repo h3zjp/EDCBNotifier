@@ -3,6 +3,8 @@ import os
 import sys
 import colorama
 import requests
+import urllib.request
+import json
 from pprint import pprint
 
 import config
@@ -150,6 +152,37 @@ def main():
             print('[DirectMessage] Message: https://twitter.com/messages/' + 
                 result_directmessage['event']['message_create']['target']['recipient_id'] + '-' +
                 result_directmessage['event']['message_create']['sender_id'], end = '\n\n')
+
+
+    # cURL でメッセージを送信する
+    if ('cURL' in config.NOTIFY_TYPE):
+
+        curl_addr = 'https://example.com/api/xxx'
+        req_header = {
+            'Content-Type': 'application/json',
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0',
+        }
+        req_data = json.dumps({
+          'access_token': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+          'status': message,
+        })
+
+        req = urllib.request.Request(curl_addr, data=req_data.encode(), method='POST', headers=req_header)
+
+        try:
+            with urllib.request.urlopen(req) as response:
+                body = json.loads(response.read())
+                headers = response.getheaders()
+                status = response.getcode()
+
+                print('[cURL] Result: Success')
+                print(headers)
+                print(status)
+                print(body)
+
+        except urllib.error.URLError as e:
+            print('[cURL] Result: Failed')
+            print(e.reason)
 
 
 if __name__ == '__main__':
