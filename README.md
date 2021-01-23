@@ -1,25 +1,25 @@
 
-# <img alt="Logo" src="EDCBNotifier/EDCBNotifier.png" height="26"> EDCBNotifier
+# AmatsukazeNotifier
 
-![Screenshot](https://user-images.githubusercontent.com/39271166/88943606-a877c300-d2c6-11ea-8323-7914f78f50e0.png)
+![Screenshot](https://github.com/nukemiri/AmatsukazeNotifier/blob/images/Readme/01.jpg)
 
-EDCB から LINE や Twitter（ツイート・DM）に、そして cURL を使って通知を送れるツールです。
+Amatsukaze から LINE や Twitter（ツイート・DM）に通知を送れるツールです。
 
 ## About・Feature
 
-xtne6f 版 EDCB のバッチファイル実行機能を使い、
+[Amatsukaze](https://github.com/nekopanda/Amatsukaze) のバッチファイル実行機能を使い、
+
 
 - LINE (LINE Notify)
 - Twitter (ツイート)
 - Twitter (ダイレクトメッセージ)
-- cURL
 
-に EDCB の各通知を送信できる Python 製ツールです。
+に Amatsukaze の各通知を送信できる Python 製ツールです。
+tsukumijima氏の[EDCBNotifier](https://github.com/tsukumijima/EDCBNotifier)を元に制作しました。
 
-xtne6f 版 EDCB のバッチファイル実行機能を利用しているため、xtne6f 版の EDCB 、または tkntrec 版など xtne6f 版をフォークした EDCB が必要です（ここ数年の EDCB ならいけるはず）。  
-EDCB 本家に実装されていた Twitter 機能 (Twitter.dll) の代替としても使えると思います。
+Amatsukaze のバッチファイル実行機能を利用しているため、変換処理の実行前後に通知を送る事が可能です。
 
-たとえば、EDCB で録画が開始されたときに LINE で録画開始を番組名を添えて通知したり、EPG 自動予約で追加された予約を通知で確認することができます。
+たとえば、Amatsukaze でエンコードが開始された旨を通知したり、実行結果の一部の情報を送信するといった事が可能です。
 
 LINE への通知は LINE Notify を使って送信します。  
 LINE Notify はアプリケーションからの通知を指定したユーザーやグループで受信することができるサービスです。  
@@ -29,54 +29,49 @@ Twitter への通知はツイートでの通知に加え、ダイレクトメッ
 ダイレクトメッセージは自分宛てに送ることも、DM を送信できる他のアカウントに送ることもできます。  
 たとえば、録画通知用の Twitter アカウントを作ってメインアカウントと相互フォローになり、録画通知用のアカウントからメインアカウント宛てに通知を送ることもできます。
 
-※: cURL は手抜き実装のため、EDCBNotifier.py を直接編集する必要があります。投稿先のサービスに応じて、適宜修正して下さい。
-
 通知できるイベントは、
 
-- 予約を追加したとき (PostAddReserve.bat が実行されたとき)
-- 予約を変更したとき (PostChgReserve.bat が実行されたとき)
-- 録画を開始したとき (PostRecStart.bat が実行されたとき)
-- 録画を終了したとき (PostRecEnd.bat が実行されたとき)
-- 更新通知が送られたとき (PostNotify.bat が実行されたとき)
+- 変換を開始したとき (実行前_AmatsukazeNotifier.bat が実行されたとき)
+- 変換が成功したとき (処理完了状態で実行後_AmatsukazeNotifier.bat が実行されたとき)
+- 変換が失敗したとき (処理失敗状態で実行後_AmatsukazeNotifier.bat が実行されたとき)
 
-の 5 つです。
+の 3つです。
 
 それぞれのイベントは、個別に通知するかどうかを設定できます。  
-更新通知が頻繁に送られてきてうるさい、といったときに \[更新通知が送られたとき] のイベントだけ通知しないようにすることも可能です。
+EDCBNotifierを導入している場合は、録画終了の通知後ほぼノータイムで変換開始の通知が送信されることになるので、頻繁に送られて煩いという場合には変換開始のイベントだけ通知しないようにすることも可能です。
 
-通知するメッセージは 5 つのイベントごとに自由に変更できます。  
+通知するメッセージは 3 つのイベントごとに自由に変更できます。  
 設定ファイルは Python スクリプトなので、Python の知識があればメッセージをより高度にカスタマイズすることもできそうです。  
-EDCB からのマクロに加えて、放送局名から取得したハッシュタグや更新通知タイプ、放送局名やタイトル名の英数字の半角変換など、独自のマクロも用意しています。
+
+
+基本的にEDCBで録画を行なった場合を想定しているので、その他のソフトを使用して録画したファイルでは正しく動作しない場合があります。
+また、AmatsukazeServerとAmatsukazeClientをそれぞれ別のマシンで動作させている場合は正しく動作しない可能性があります。
 
 ## Setup
 
 ### 1. ダウンロード・配置
 
-<img src="https://user-images.githubusercontent.com/39271166/88381578-a357d700-cde1-11ea-9f5a-12f559af093a.png" width="400px">
+<img src="https://github.com/nukemiri/AmatsukazeNotifier/blob/images/Readme/02.png" width="400px">
 
- \[Code] メニュー内の \[Download Zip] をクリックし、EDCBNotifier をダウンロードします。  
-または、[こちら](https://github.com/tsukumijima/EDCBNotifier/archive/master.zip) のリンクからでもダウンロードできます。
+ \[Code] メニュー内の \[Download Zip] をクリックし、AmatsukazeNotifier をダウンロードします。  
+または、[こちら](https://github.com/nukemiri/AmatsukazeNotifier/archive/master.zip) のリンクからでもダウンロードできます。
 
 ダウンロードできたら解凍し、
 
-- EDCBNotifier フォルダ
-- PostAddReserve.bat
-- PostChgReserve.bat
-- PostRecStart.bat
-- PostRecEnd.bat
-- PostNotify.bat
+- AmatsukazeNotifier フォルダ
+- bat
 
-を EDCB 本体 (EpgTimer.exe) があるフォルダに配置します。  
+を Amatsukaze 本体 (Amatsukaze.vbs) があるフォルダに配置します。  
 また、requirements.txt は今後の作業で利用するので、取っておいてください。
 
 ### 2. Python のインストール
 
-EDCBNotifier の実行には Python (Python3) が必要です 。動作確認は Python 3.7 系と Python 3.8 系で行っています。
+AmatsukazeNotifier の実行には Python (Python3) が必要です 。動作確認は Python 3.7 系と Python 3.8 系で行っています。
 
 すでに Python3 がインストールされている場合はスキップしても構いませんが、**すでに Python2 がインストールされている場合は別途 Python3 をインストールしてください。**  
 （Python2 と Python3 は半分別物で、このうち Python2 は 2020 年 1 月でサポートが終了しています）
 
-![Screenshot](https://user-images.githubusercontent.com/39271166/88384104-c042d900-cde6-11ea-89f3-a1341b5d998e.png)
+![Screenshot](https://github.com/nukemiri/AmatsukazeNotifier/blob/images/Readme/03.png)
 
 [非公式 Python ダウンロードリンク](https://pythonlinks.python.jp/ja/index.html) から、Python3 のインストーラーをダウンロードします。  
 とくにこだわりがないのであれば、**一番上にある Windows (64bit) 用 Python 3.8 の最新版 ( 2020 年 7 月現在の最新は 3.8.5 ) をダウンロードしてください。**  
@@ -87,7 +82,7 @@ Python 公式サイトにも大きいダウンロードボタンがあります�
 もし OS が 32bit の方は Windows (32bit) 用をダウンロードしてください（ほとんどいないと思うけど…）。  
 **Windows10 では Microsoft Store からもインストールすることができますが、安定していない上にストアアプリの制限の影響で正常に動かないことがあるため、非推奨です。**
 
-<img src="https://user-images.githubusercontent.com/39271166/88402926-be890d80-ce06-11ea-87fd-59c80cbd046e.png" width="600px">
+<img src="https://github.com/nukemiri/AmatsukazeNotifier/blob/images/Readme/04.png" width="600px">
 
 ダウンロードが終わったらインストーラーを実行します。
  \[Install Now] と \[Custom Install] がありますが、 \[Custom Install] の方をクリックしてください。  
@@ -95,7 +90,7 @@ Python 公式サイトにも大きいダウンロードボタンがあります�
 
  \[Option Features] は特にこだわりがなければそのまま進みます。  
 
-<img src="https://user-images.githubusercontent.com/39271166/88402933-c3e65800-ce06-11ea-912f-e46151231e97.png" width="600px">
+<img src="https://github.com/nukemiri/AmatsukazeNotifier/blob/images/Readme/05.png" width="600px">
 
  \[Advanced Options] は ** \[Install for all users] にチェックを入れます**（これで AppData 以下に配置されなくなる）。  
 デフォルトでは AppData 以下にユーザーインストールする設定になっていますが、他のユーザーから見れないほかパスが長くなっていろいろ面倒だと思うので、私はおすすめしません。  
@@ -110,36 +105,33 @@ Python 公式サイトにも大きいダウンロードボタンがあります�
 
 ### 3. 依存ライブラリのインストール
 
-EDCBNotifier が必要とする colorama・jaconv・requests・twitter の各ライブラリを pip でインストールします。  
+AmatsukazeNotifier が必要とする colorama・jaconv・requests・twitter の各ライブラリを pip でインストールします。  
 
-**コマンドプロンプトや PowerShell を開き、`pip install -r (ダウンロードした EDCBNotifier\requirements.txt)` と実行します。**  
+**コマンドプロンプトや PowerShell を開き、`pip install -r (ダウンロードした AmatsukazeNotifier\requirements.txt)` と実行します。**  
 または単に `pip install -r colorama jaconv requests twitter` としても構いません。
 
 エラーなくインストールできれば OK です。
 
 ### 4. 設定ファイルの作成
 
-EDCB 内に配置した EDCBNotifier フォルダ内の config.default.py は、設定ファイルのひな形になるファイルです。  
+Amatsukaze 内に配置した AmatsukazeNotifier フォルダ内の config.default.py は、設定ファイルのひな形になるファイルです。  
 config.default.py を config.py にコピーしてください（コピーしておかないと設定が読み込めず動きません）。
 
 リネームでもかまいませんが、設定をミスったときのために config.default.py は取っておくことを推奨します。
 
-### 5. EpgTimerSrv の再起動
+### 5. Amatsukaze でバッチを登録
 
-.bat ファイルの追加を EDCB に反映するためには、EpgTimerSrv の再起動が必要です。   
-EpgTimerSrv をタスクトレイに入れて運用している場合は、EpgTimerSrv を終了後、もう一度起動させてください。
+<img src="https://github.com/nukemiri/AmatsukazeNotifier/blob/images/Readme/06.png" width="600px">
 
-EpgTimerSrv をサービスとして運用している場合は、EpgTimer Service の再起動が必要です。  
-`net stop "EpgTimer Service" && net start "EpgTimer Service"` と実行するか、［コンピューターの管理］→［サービス］からサービスを再起動してください。
+Amatsukaze/bat/ に追加した .bat ファイルはAmatsukazeに自動で認識され、頭に "実行前_"と付くものは実行前バッチとして、"実行後_"と付くものは実行後バッチとして登録が可能になります。
+プロファイルタブから使用するプロファイルを選んで実行前バッチと実行後バッチの項目に 実行前_AmatsukazeNotifier.bat と 実行後_AmatsukazeNotifier.bat を登録して適用してください。
 
-ただ、経験上 EpgTimer Service を再起動すると EpgTimer の挙動が変になることがあるようなので、一度 Windows 自体を再起動してしまうのが手っ取り早いと思います。    
-録画中（ EpgDataCap_Bon の稼働中）に EpgTimer Service を再起動してしまうと、手動で止めない限り録画が終わらない等の不具合が出る場合があるため、避けてください。
 
 これでインストールは完了です。
 
 ## Usage
 
-EDCBNotifier の設定は EDCBNotifier フォルダ内の config.py にて行います。  
+AmatsukazeNotifier の設定は AmatsukazeNotifier フォルダ内の config.py にて行います。  
 LINE Notify へ通知する場合は LINE Notify のアクセストークンが、Twitter へ通知する場合は Twitter API アプリが必須になります。  
 LINE Notify のアクセストークンの作成には LINE へのログインが、Twitter API アプリの作成には Twitter の開発者アカウントがそれぞれ必要です。 
 
@@ -154,7 +146,7 @@ config.py を<u>文字コード UTF-8 (BOM 無し)・改行コード LF で編�
 
 **通知を行うイベント** (NOTIFY_EVENT) では、通知するイベントのオン・オフを設定できます。  
 ここで設定したイベントだけが通知されます。たとえば頻度の多い PostNotify だけ通知しない設定も可能です。  
-デフォルト … 全てオン (`['PostAddReserve', 'PostChgReserve', 'PostRecStart', 'PostRecEnd', 'PostNotify']`)
+デフォルト … 全てオン (`['PostEncStart', 'PostEncSuccess', 'PostEncFailed']`)
 
 **通知時に同時に送信する画像** (NOTIFY_IMAGE) では、通知時に同時に送信する画像を指定できます。   
 None に設定した場合は画像を送信しません。画像サイズが大きすぎると送れない場合があるので注意してください（使う機会がない気も…）  
@@ -165,7 +157,7 @@ None に設定した場合は画像を送信しません。画像サイズが大
 デフォルト … 自分宛てに送信する (`None`)
 
 **ログをファイルに保存するか** (NOTIFY_LOG) では、ログをファイルに保存（出力）するかどうかを設定します。  
-True に設定した場合は、ログを config.py と同じフォルダの EDCBNotifier.log に保存します。前回のログは上書きされます。また、コンソールへログを出力しなくなります。  
+True に設定した場合は、ログを config.py と同じフォルダの AmatsukazeNotifier.log に保存します。前回のログは上書きされます。また、コンソールへログを出力しなくなります。  
 False に設定した場合は、ログを保存しません。通常通りコンソールにログを出力します。  
 デフォルト … ログをファイルに保存しない (`False`)
 
@@ -177,34 +169,147 @@ False に設定した場合は、ログを保存しません。通常通りコ�
 通知イベントごとにメッセージを編集できます。  
 通知するメッセージの設定は config.py の \[メッセージ] セクションにあります。
 
-[EDCB/Document/Readme_EpgTimer.txt#L929-L1008](https://github.com/xtne6f/EDCB/blob/70b2331aadb328eb347fe0c4e4e23c8e91d286b7/Document/Readme_EpgTimer.txt#L929-L1008) と [EDCB/Document/Readme_Mod.txt#L451-L475](https://github.com/xtne6f/EDCB/blob/4c3bd5be3dc49607aa821d728105955c03fba4db/Document/Readme_Mod.txt#L451-L475) に記載されている EDCB のマクロが使えます。マクロは $$ で囲んでください (ex: \$ServiceName\$)。  
-PostRecEnd の \$Drops\$ / \$Scrambles\$ / \$Result\$ など、特定のイベントでのみ利用できるマクロもあります。
+EDCBNotifier で使えても AmatsukazeNotifierでは使えないマクロもあるので注意。
+独自のマクロも多くあります。
+Amatsukaze の[バッチファイル実行機能](https://github.com/nekopanda/Amatsukaze/wiki/%E3%83%90%E3%83%83%E3%83%81%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%AE%9F%E8%A1%8C%E6%A9%9F%E8%83%BD)に環境変数として記載されているものは前後に\$をつければ基本的にそのまま使えます。
+実行後バッチでしか利用できないものもあるので注意してください。
 
-また、独自にいくつかのマクロを追加しています。
 
+使用可能マクロ一覧
+
+#### 実行前、実行後共通
+Amatsukaze の環境変数と同じマクロ
+- \$ITEM_ID\$ … アイテムに一意に振られるID。追加時、実行前、実行後で同じアイテムを追跡できる。Amatsukazeを再起動するとIDが変わるので注意。
+- \$IN_PATH\$ … 入力ファイルパス
+- \$OUT_PATH\$ … 出力ファイルパス（拡張子を含まない）
+- \$SERVICE_ID\$ … サービスID（チャンネルID）
+- \$SERVICE_NAME\$ … サービス名（チャンネル名）
+- \$TS_TIME\$ … TSファイルの時刻
+- \$ITEM_MODE\$ … モード。Batch…通常 AutoBatch…自動追加 Test…テスト DrcsCheck…DRCSチェック CMCheck…CMチェック
+- \$ITEM_PRIORITY\$ … アイテム優先度(1-5)
+- \$ITEM_GENRE\$ … 番組ジャンル （[ジャンル] - [詳細ジャンル] の形式 例: アニメ／特撮 - 国内アニメ）
+- \$IMAGE_WIDTH\$ … 映像幅
+- \$IMAGE_HEIGHT\$ … 映像高さ
+- \$EVENT_NAME\$ … 番組名
+- \$TAG\$ … Amatsukaze で設定したタグ
+- \$PROFILE_NAME\$ … プロファイル名
+
+EDCB 準拠マクロ
+- \$Title\$ … 番組名 \$EVENT_NAME\$と同じ
+- \$Title2\$ … 番組名（[]の括弧でくくられている部分を削除したもの）
+- \$SubTitle\$ … サブタイトル
+- \$SID10\$ … ServiceID 10進数 \$SERVICE_ID\$と同じ
+- \$SID16\$ … ServiceID 16進数
+- \$ServiceName\$ … サービス名(チャンネル名) \$SERVICE_NAME\$と同じ
+- \$Genre\$ … 番組のジャンル
+- \$SDYYYY\$ … 番組開始日の年4桁
+- \$SDYY\$ … 番組開始日の年2桁
+- \$SDMM\$ … 番組開始日の月2桁固定
+- \$SDM\$ … 番組開始日の月
+- \$SDDD\$ … 番組開始日の日2桁固定
+- \$SDD\$ … 番組開始日の日
+- \$SDW\$ … 番組開始日の曜日
+- \$STHH\$ … 番組開始時刻の時2桁固定
+- \$STH\$ … 番組開始時刻の時
+- \$STMM\$ … 番組開始時刻の分2桁固定
+- \$STM\$ … 番組開始時刻の分
+- \$STSS\$ … 番組開始時刻の秒2桁固定
+- \$STS\$… 番組開始時刻の秒
+- \$EDYYYY\$ … 番組終了日の年4桁
+- \$EDYY\$ … 番組終了日の年2桁
+- \$EDMM\$ … 番組終了日の月2桁固定
+- \$EDM\$ … 番組終了日の月
+- \$EDDD\$ … 番組終了日の日2桁固定
+- \$EDD\$ … 番組終了日の日
+- \$EDW\$ … 番組終了日の曜日
+- \$ETHH\$ … 番組終了時刻の時2桁固定
+- \$ETH\$ … 番組終了時刻の時
+- \$ETMM\$ … 番組終了時刻の分2桁固定
+- \$ETM\$ … 番組終了時刻の分
+- \$ETSS\$ … 番組終了時刻の秒2桁固定
+- \$ETS\$ … 番組終了時刻の秒
+
+EDCBNotifier 準拠マクロ
 - \$HashTag\$ … 放送局名から取得したハッシュタグ (ハッシュタグは utils.py の get_hashtag() メソッドで定義) 
-- \$HashTagTitle\$ … 番組タイトルから取得したハッシュタグ (ハッシュタグは下記の NOTIFY_HASHTAG_TITLE で定義) 
-- \$NotifyName\$ … \$NofityID\$ から取得した更新通知タイプ（\$NofityID\$ = 1 … EPGデータ更新 2 … 予約情報更新 3 … 録画結果情報更新）
-- \$ServiceNameHankaku\$ … \$ServiceName\$（放送局名）の英数字を半角に変換したもの
-- \$TitleHankaku\$ … \$Title\$（番組タイトル）の英数字を半角に変換したもの
-- \$Title2Hankaku\$ … \$Title2\$（番組タイトル・[]で囲まれている部分を削除したもの）の英数字を半角に変換したもの
-- \$TimeYYYY\$ … 実行時刻の上2桁付き西暦年 (ex: 2020 (年))  \$TimeYY\$ … 実行時刻の上2桁なし西暦年 (ex: 20 (年))
-- \$TimeMM\$ … 実行時刻の2桁固定の月 (ex: 07 (月))  \$TimeM\$ … 実行時刻の月 (ex: 7 (月))
-- \$TimeDD\$ … 実行時刻の2桁固定の日 (ex: 09 (日))  \$TimeD\$ … 実行時刻の日 (ex: 9 (日))
+- \$ServiceNameHankaku\$ … サービス名（チャンネル名） 英数半角
+- \$EventNameHankaku\$ … 番組名 英数半角
+- \$TitleHankaku\$ … $Title$（番組タイトル）の英数字を半角に変換したもの
+- \$Title2Hankaku\$ … $Title2$（番組タイトル・[]で囲まれている部分を削除したもの）の英数字を半角に変換したもの
+- \$TimeYYYY\$ … 実行時刻の上2桁付き西暦年 (ex: 2020 (年)) $TimeYY$ … 実行時刻の上2桁なし西暦年 (ex: 20 (年))
+- \$TimeMM\$ … 実行時刻の2桁固定の月 (ex: 07 (月)) $TimeM$ … 実行時刻の月 (ex: 7 (月))
+- \$TimeDD\$ … 実行時刻の2桁固定の日 (ex: 09 (日)) $TimeD$ … 実行時刻の日 (ex: 9 (日))
 - \$TimeW\$ … 実行時刻の曜日 (ex: 火 (曜日))
-- \$TimeHH\$ … 実行時刻の2桁固定の時 (24時間) (ex: 06 (時))  \$TimeH\$ … 実行時刻の日 (ex: 6 (時))
-- \$TimeII\$ … 実行時刻の2桁固定の分 (ex: 08 (分))  \$TimeI\$ … 実行時刻の分 (ex: 8 (分))
-- \$TimeSS\$ … 実行時刻の2桁固定の秒 (ex: 02 (秒))  \$TimeS\$ … 実行時刻の分 (ex: 2 (秒))
+- \$TimeHH\$ … 実行時刻の2桁固定の時 (24時間) (ex: 06 (時)) $TimeH$ … 実行時刻の日 (ex: 6 (時))
+- \$TimeII\$ … 実行時刻の2桁固定の分 (ex: 08 (分)) $TimeI$ … 実行時刻の分 (ex: 8 (分))
+- \$TimeSS\$ … 実行時刻の2桁固定の秒 (ex: 02 (秒)) $TimeS$ … 実行時刻の分 (ex: 2 (秒))
+
+AmatsukazeNotifier 独自マクロ
+- \$InFolderPath\$ … 入力ファイルのフォルダパス（最後に\はなし）（バッチのみ）
+- \$InFileName\$ … 入力ファイル名（拡張子なし）（バッチのみ）
+- \$OutFolderPath\$ … 出力ファイルのフォルダパス（最後に\はなし）（バッチのみ）
+- \$OutFileName\$ … 出力ファイル名（拡張子なし）（バッチのみ）
+
+
+
+
+
+#### 実行後のみで有効
+Amatsukaze の環境変数と同じマクロ
+- \$SUCCESS\$ … 成功=1,失敗=0
+- \$ERROR_MESSAGE\$ … エラーメッセージ（成功時でも出る場合がある）
+- \$IN_DURATION\$ … 入力ファイルの再生時間の秒トータル（30分なら1800）
+- \$OUT_DURATION\$… 出力ファイルの再生時間の秒トータル（30分なら1800）
+- \$LOGO_FILE\$ … ロゴファイルパス
+- \$NUM_INCIDENT\$ … インシデント数
+- \$JSON_PATH\$ … 出力JSONパス
+- \$LOG_PATH\$ … ログファイルパス
+
+AmatsukazeNotifier 独自マクロ
+- \$CDSecs\$ … AmatsukazeがCMと判定してカットした秒数（小数点以下四捨五入）
+- \$CDHH\$ … AmatsukazeがCMと判定してカットした時間の時間2桁固定
+- \$CDH\$ … AmatsukazeがCMと判定してカットした時間の時間
+- \$CDMM\$ … AmatsukazeがCMと判定してカットした時間の分2桁固定
+- \$CDM\$ … AmatsukazeがCMと判定してカットした時間の分
+- \$CDSS\$ … AmatsukazeがCMと判定してカットした時間の秒2桁固定
+- \$CDS\$ … AmatsukazeがCMと判定してカットした時間の秒
+- \$CutDur\$ … AmatsukazeがCMと判定したカットした時間(m分s秒 or s秒)
+- \$IDHH\$ … 変換前の再生時間の時間2桁固定
+- \$IDH\$ … 変換前の再生時間の時間
+- \$IDMM\$ … 変換前の再生時間の分2桁固定
+- \$IDM\$ … 変換前の再生時間の分
+- \$IDSS\$ … 変換前の再生時間の秒2桁固定
+- \$IDS\$ … 変換前の再生時間の秒
+- \$ODHH\$ … 変換後の再生時間の時間2桁固定
+- \$ODH\$ … 変換後の再生時間の時間
+- \$ODMM\$ … 変換後の再生時間の分2桁固定
+- \$ODM\$ … 変換後の再生時間の分
+- \$ODSS\$ … 変換後の再生時間の秒2桁固定
+- \$ODS\$ … 変換後の再生時間の秒
+- \$InSizeByte\$ … 変換前のサイズ（バイト単位）
+- \$InSizeKB\$ … 変換前のサイズ（KB単位）
+- \$InSizeMB\$ … 変換前のサイズ（MB単位）
+- \$InSizeGB\$ … 変換前のサイズ（GB単位）少数第一位まで
+- \$OutSizeByte\$ … 変換後のサイズ（バイト単位）
+- \$OutSizeKB\$ … 変換後のサイズ（KB単位）
+- \$OutSizeMB\$ … 変換後のサイズ（MB単位）
+- \$OutSizeGB\$ … 変換後のサイズ（GB単位）少数第一位まで
+- \$CompressSizeByte\$ … エンコードで圧縮したサイズ（バイト単位）
+- \$CompressSizeKB\$ … エンコードで圧縮したサイズ（KB単位）
+- \$CompressSizeMB\$ … エンコードで圧縮したサイズ（MB単位）
+- \$CompressSizeGB\$ … エンコードで圧縮したサイズ（GB単位）少数第一位まで
 
 Python の辞書 (dict) 形式で格納しているので、改行を入れる場合は文字列内に \n と入力してください。文字列は + で連結できます。  
-マクロが存在しないか空の場合は -- が返されます。.bat ファイルを直接実行した場合は EDCB から渡される環境変数が存在しないため、全てのマクロが -- になります。
+
+
+また、PostEncSuccess と PostEncFailed 用にエラーメッセージを設定できます。
+
+Amatsukazeからエラーが出力された際には \[エラー: DRCSマッピングのない文字 127件] や \[エラー: キャンセルされました] の様な文字列をメッセージの最後に追加します。
+エラーがなかった場合には追加されません。
+このエラーメッセージも config.py の ErrorMessage でマクロで自由にカスタマイズする事が可能です。
+エラーメッセージを使用しない場合は ErrorMessage = ''のように何も入力しないでください。
 
 デフォルトのように絵文字も送信できます（ただ新しい絵文字だと端末側で表示できなかったりするので注意）。  
 カスタマイズしたい方は、お好みの通知メッセージへ変更してみてください。
-
-**番組タイトル（半角）に対応するハッシュタグ** (NOTIFY_HASHTAG_TITLE) では、\$HashTagTitle\$ マクロにて利用する番組タイトルに対応するハッシュタグを設定します。部分一致です。  
-番組タイトルの判定には \$TitleHankaku\$ の値を利用します。NOTIFY_HASHTAG_TITLE 内に存在しない番組タイトルのハッシュタグは空文字になります。  
-config.py 内の記述例を参考に、番組タイトルとハッシュタグの対応を記述してください。
 
 ### 3. LINE Notify
 
@@ -213,22 +318,22 @@ LINE Notify へ通知しない場合は必要ありませんが、後述する T
 [LINE Notify](https://notify-bot.line.me/ja/) にアクセスし、右上の \[ログイン] から LINE へログインします（いつも使っているアカウントで構いません）。  
 ログインできたら、右上のメニューから \[マイページ] に移動します。
 
-![Screenshot](https://user-images.githubusercontent.com/39271166/88371969-06407280-cdd0-11ea-9e70-ed5b796d79e0.png)
+![Screenshot](https://github.com/nukemiri/AmatsukazeNotifier/blob/images/Readme/07.png)
 
 下の方にある「アクセストークンの発行(開発者向け)」へ行き、 \[トークンを発行する] をクリックします。
 
-![Screenshot](https://user-images.githubusercontent.com/39271166/88370184-81a02500-cdcc-11ea-8147-772f3ceb9662.png)
+![Screenshot](https://github.com/nukemiri/AmatsukazeNotifier/blob/images/Readme/08.png)
 
-トークン名は LINE Notify で通知が送られてきたときに \[EDCBNotifier] のように付加される文字列です（ LINE Notify 全体でユニークである必要はないらしい）。  
+トークン名は LINE Notify で通知が送られてきたときに \[AmatsukazeNotifier] のように付加される文字列です（ LINE Notify 全体でユニークである必要はないらしい）。  
 通知を送信するトークルームは \[1:1 で LINE Notify から通知を受ける] か、任意のグループ LINE を選択してください。  
 ここでは「1:1 で LINE Notify から通知を受ける」（現在ログインしているアカウントに届く）を選択します。 
 
-![Screenshot](https://user-images.githubusercontent.com/39271166/88371432-fbd1a900-cdce-11ea-8e9f-2067360c32b9.png)
+![Screenshot](https://github.com/nukemiri/AmatsukazeNotifier/blob/images/Readme/09.png)
 
  \[発行する] をクリックするとアクセストークンが発行されるので、 \[コピー] をクリックしてクリップボードにコピーします。  
 アクセストークンはこの画面を閉じると二度と表示されない（一度解除し同じ内容でもう一度発行することはできるがアクセストークンは変わる）ので、どこかにメモしておくと良いでしょう。
 
-![Screenshot](https://user-images.githubusercontent.com/39271166/88371444-fecc9980-cdce-11ea-8293-b9a8bf765422.png)
+![Screenshot](https://github.com/nukemiri/AmatsukazeNotifier/blob/images/Readme/10.png)
 
 画面を閉じると LINE Notify と設定したトークルームが連携されているはずです。
 
@@ -236,8 +341,6 @@ LINE Notify へ通知しない場合は必要ありませんが、後述する T
 
 これで、LINE Notify に通知を送信できる状態になりました！ 
 
-試しに 5 つある .bat ファイルのうちのどれかを実行してみましょう。EDCB からの実行ではないのでマクロは全て空になっていますが、ちゃんと LINE に通知が届いているはずです。  
-もし届かない場合はログ出力をオンにしてみたり、.bat ファイルをコマンドプロンプトや PowerShell 上で実行し、出力される内容を確認してみてください。
 
 ### 4. Twitter (ツイート・ダイレクトメッセージ)
 
@@ -250,25 +353,25 @@ Twitter へ通知する場合は Twitter へ開発者登録を申請し、開発
 Twitter API を使うためには後述する Consumer Key・Consumer Secret・Access Token・Access Token Secret の 4 つが必要ですが、このうち Twitter Developers でアプリ作成後に生成できる Access Token・Access Token Secret は開発者アカウントをしたアカウントのものが表示されます。  
 裏を返せば、予め開発者アカウントで Consumer Key・Consumer Secret を作成・取得し、ツイートさせたい Twitter アカウントとアプリ連携して Access Token・Access Token Secret が取得できれば、開発者登録をしたアカウント以外でも録画通知用のアカウントにできる、とも言えます。
 
-自作のツールになりますが、[Twitter API のアクセストークンを確認するやつ](https://tools.tsukumijima.net/twittertoken-viewer/) を使うと、EDCBNotifier のようなアプリ連携を実装していないツールでも Access Token・Access Token Secret を取得できます（極論、これを使わなくても作成した Consumer Key・Consumer Secret で録画通知用のアカウントとアプリ連携して Access Token・Access Token Secret を取得できれば可能です）。  
+EDCBNotifierの作者tsukumijima氏のツールである、[Twitter API のアクセストークンを確認するやつ](https://tools.tsukumijima.net/twittertoken-viewer/) を使うと、AmatsukazeNotifier のようなアプリ連携を実装していないツールでも Access Token・Access Token Secret を取得できます（極論、これを使わなくても作成した Consumer Key・Consumer Secret で録画通知用のアカウントとアプリ連携して Access Token・Access Token Secret を取得できれば可能です）。  
 
 [Twitter Developers](https://developer.twitter.com/en/apps) にアクセスし、右上の \[Create App] から Twitter Developer アプリケーションの作成画面に移動します（ここで言う Twitter Developer アプリケーション（以下 Twitter API アプリ）は Twitter API を使うプロジェクトのような意味です）。  
 Twitter API アプリを作成すると、Twitter API を使うために必要な Consumer Key・Consumer Secret を取得できます。   
 すでに Twitter API アプリを作成している場合は飛ばすこともできますが、via が被るので新しく作ってもいいと思います。開発者登録のときとは異なり、審査はありません。
 
-![ScreenShot](https://user-images.githubusercontent.com/39271166/88845529-444df400-d21f-11ea-89db-4243e077e622.png)
+![ScreenShot](https://github.com/nukemiri/AmatsukazeNotifier/blob/images/Readme/11.png)
 
 #### App name（必須・重複不可らしい）
 
 ここの名前がツイートの via として表示されます。  
 いわゆる「独自 via 」と呼ばれるものです。後で変えることもできるので、好きな via にしましょう。
 
-（例）EDCBNotifier@（自分の TwitterID ）  
+（例）AmatsukazeNotifier@（自分の TwitterID ）  
 （例）Twitter for （自分の Twitter 名）  
 
 #### Application description（必須）
 
-（例）EDCBNotifier@example から録画通知をツイートするためのアプリケーションです。
+（例）AmatsukazeNotifier@example から録画通知をツイートするためのアプリケーションです。
 
 #### Website URL（必須）
 
@@ -305,30 +408,30 @@ Twitter API アプリを作成すると、Twitter API を使うために必要�
 
 #### Tell us how this app will be used（必須）  
 
-（例）このアプリケーションは、EDCBNotifier から通知をツイートするためのアプリケーションです。  
+（例）このアプリケーションは、AmatsukazeNotifier から通知をツイートするためのアプリケーションです。  
 　　　このアプリケーションは、テレビの録画予約の追加・変更、録画の開始・終了をツイートやダイレクトメッセージで通知します。
 
 #### （英語・こちらをコピペ）
 
-（例）This application is for tweeting notifications from EDCBNotifier.   
+（例）This application is for tweeting notifications from AmatsukazeNotifier.   
 　　　This application notifies you of the addition/change of TV recording reservation and the start/end of recording by tweet or directmessage.
 
 記入し終えたら \[Create] をクリックし、Twitter API アプリを作成します。
 
 ダイレクトメッセージを送信するため Permissions タブに移動し、\[Edit] をクリックします。
 
-![ScreenShot](https://user-images.githubusercontent.com/39271166/88842998-5f1e6980-d21b-11ea-93ec-80e9caeb2754.png)
+![ScreenShot](https://github.com/nukemiri/AmatsukazeNotifier/blob/images/Readme/12.png)
 
 **Access permission** を **Read, write, and Direct Messages** に設定し、\[Save] で保存します。  
 こうすることでツイートの読み取り・ツイートの書き込みなどに加え、ダイレクトメッセージを送信できるようになります。  
 Permissions を変更すると今までに取得した Access Token・Access Token Secret が無効になります。注意してください。
 
-![ScreenShot](https://user-images.githubusercontent.com/39271166/88842886-2f6f6180-d21b-11ea-8265-b2a67653e674.png)
+![ScreenShot](https://github.com/nukemiri/AmatsukazeNotifier/blob/images/Readme/13.png)
 
 Keys and tokens タブに移動し、API Key と API Key Secret をクリップボードにコピーします。  
 API Key が Consumer Key 、API Key Secret が Consumer Secret にあたります。  
 
-![ScreenShot](https://user-images.githubusercontent.com/39271166/88843951-de606d00-d21c-11ea-8b77-9ecdad694470.png)
+![ScreenShot](https://github.com/nukemiri/AmatsukazeNotifier/blob/images/Readme/14.png)
 
 開発者登録したアカウントで利用する場合は、**Access token & access token secret** の横の \[Generate]をクリックし、Access Token・Access Token Secret を生成します。  
 Access Token・Access Token Secret が表示されるので、クリップボードにコピーします。
@@ -340,11 +443,9 @@ Access Token・Access Token Secret が表示されるので、クリップボー
 
 これで Twitter にツイートやダイレクトメッセージで通知を送信できる状態になりました！ 
 
-LINE Notify と同様に、5 つある .bat ファイルのうちのどれかを実行してみましょう。ちゃんとツイートと自分宛てのダイレクトメッセージで通知が届いていれば OK です。  
-もし届かない場合はログ出力をオンにしてみたり、.bat ファイルをコマンドプロンプトや PowerShell 上で実行し、出力される内容を確認してみてください。
 
 これで設定は完了です！お疲れさまでした！   
-なにか不具合や要望などあれば [Issues](https://github.com/tsukumijima/EDCBNotifier/issues) か [Twitter](https://twitter.com/TVRemotePlus) までお願いします。 
+なにか不具合や要望などあれば [Issues](https://github.com/nukemiri/AmatsukazeNotifier/issues) までお願いします。 
 
 ## License
-[MIT License](LICENSE.txt)
+[MIT Licence](LICENSE.txt)
